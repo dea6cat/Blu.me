@@ -1,0 +1,159 @@
+
+{% extends 'base.html' %}
+{%load static%}
+
+{% block content %}
+
+
+<style type="text/css">
+
+	body{
+		-ms-flex-align: center;
+  align-items: center;
+
+	}
+
+.form-signin {
+  width: auto;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: 10px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="username"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+	  .blog-posts{
+    max-width: 500px;
+    width: 100%;
+    margin: auto;
+  }
+
+.circular--portrait {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 50%;
+  
+}
+
+
+
+
+
+
+
+
+</style>
+
+
+<!--style="width: 40%;height: 100%; overflow: hidden; border-radius: 50%; object-fit: contain;"-->    
+     
+<div class="container">
+  <div class="row">
+    <div class="left-column col-lg-7 offset-lg-1">
+
+
+  
+      <div class="card mb-3 text-center " >
+  
+    <div >
+      <h5 class="card-title text-center text-muted">𝘽𝙡𝙪𝙢𝙚 ✽</h5>
+      <div class="mx-auto d-block " style="width: 176px; height: 176px; overflow: hidden; position: relative;">
+       
+            <img   width="176" height="176" src="{{user.image.url}}" name="image" class="rounded-sm rounded-circle" alt="No profile picture. Lets place one">
+        
+            
+        
+    </div>
+    </div>
+    <!-- Image -->
+        
+    
+      <div class="card-body text-center ">
+  <form class="form-signin" method="post">{% csrf_token %}
+        <a class="m-auto" href="{%url 'edit' user.pk %}"><svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-person-bounding-box" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"/>
+  <path fill-rule="evenodd" d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+</svg></a> 
+
+      <h1 class="h3 mb-3 font-weight-normal text-center">Account</h1>
+      {{form.as_p}}
+      <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus value="{{account_form.initial.email}}">
+      
+      <input type="text" name="username" id="inputUsername" class="form-control" placeholder="username" required value="{{account_form.initial.username}}">
+      {% for field in account_form%}
+        {% for error in field.errors %}
+          <p style="color: red;">{{error}}</p>
+        {% endfor %}
+      {% endfor %}
+      
+      {% if account_form.non_field_errors %}
+        <div style="color:red;">
+          <p>{{account_form.non_field_errors}}</p>
+        </div>
+      {% endif %}
+
+      {%if success_message%}
+      <p style="color:black; text-align: center;">{{success_message}}</p>
+      {%endif%}
+
+      <button style="margin-top: 5px;" class="btn btn-lg btn-primary btn-block" type="submit">Save changes</button>
+      <div class="d-flex flex-column">
+      <a class="m-auto" href="{% url 'password_change' %}">Change password</a>
+
+    </div>
+  </form>
+        
+      </div>
+    
+ 
+</div>
+
+  
+</div>
+
+
+<div class="right-column col-lg-4 d-lg-flex flex-column">
+  
+    <div class="posts">
+      <h4 class="mb-3 font-weight-normal text-white">posts:</h4>
+      {% if blog_posts %}
+
+        <ul class="list-group">
+        {% for post in blog_posts %}
+          <a href="{% url 'blog:detail' post.slug %}" style="text-decoration: none;">
+            <li class="list-group-item bg-dark text-white shadow-lg rounded" style="margin-top: 4px; width: auto;">{{post}}</li></a>
+        {% endfor %}
+        </ul>
+      {% else %}
+        <p>You have no posts. Create a post <a href="{% url 'blog:create' %}">here</a>.</p>
+      {% endif %}
+    </div>
+  
+</div>
+</div> 
+</div>
+
+
+
+
+{% endblock content%}

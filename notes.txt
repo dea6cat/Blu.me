@@ -1,0 +1,14 @@
+BUG:
+	on the detail view, there's a bug when ever a user upvotes or downvotes a post, the ulr stays on the browser, making the action loop 
+	a way to solve this has not been found yet, but a peace of code that I found might help, 
+after importing the correct modles (from django .views.generic import RedirectView)
+
+class PostLikeRedirect(redirectView):
+	def get_redirect_url(self, *args, *kwargs):
+		slug = self.kwargs.get("slug")
+		print("slug")
+		obj = get_object_or_404(Post, slug=slug)
+		return obj.get_absolute_url()
+
+
+then add the correct url under blog, follow the video 

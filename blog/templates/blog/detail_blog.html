@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<style type="text/css">
+	.card{
+		max-width: 700px;
+	}
+	.container{
+		padding: 20px;
+
+
+	}
+
+
+</style>
+
+<div class="container">
+	<div class="row">
+		<!--card start-->
+		<div class="card  mb-3 shadow-lg rounded m-auto"style="width: 60rem;">
+			<img class="card-img-top"  src="{{blog_post.image.url}}" alt="no picture">
+			<div class="card-body my-2">
+				<div class="card  rounded ml-auto" style="width: 6.5rem; height: 3rem;">
+
+			 		<form action="{%url 'blog:like_post' blog_post.pk%}" method="post">{%csrf_token%}
+
+
+				{%if liked%}
+					<button type="submit" name="post_id" value="{{blog_post.pk}}" class="btn"><svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-chevron-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				  	<path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+					</svg></button>
+				{%else%}
+					<button type="submit" name="post_id" value="{{blog_post.pk}}" class="btn"><svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-chevron-up" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				  	<path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+					</svg></button> 
+				{%endif%}
+					 {{total_likes}} 
+			</form>
+			</div>
+				<h2 class="card-title"> {{blog_post.title}}</h2> <button class="btn btn-sm btn-primary"> <a href="https://twitter.com/intent/tweet?button_hashtag=blume&ref_src=twsrc%5Etfw" class="twitter-hashtag-button text-white" data-size="large" data-dnt="true" data-show-count="false">Tweet #{{blog_post.title}}</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></button>
+				
+				<p class="card-text">{{blog_post.body}}</p>
+				{% if blog_post.author == request.user %}
+			  	<a href="{% url 'blog:edit' blog_post.slug %}" class="btn btn-primary"><i class="fas fa-cog fa-1x"></i></a>
+			  	<a href="{% url 'blog:delete' blog_post.slug %}"><i class="far fa-trash-alt fa-1x"></i></a>
+			  {% endif %}
+
+			  
+
+			
+
+			</div>
+			<div class="card-footer text-muted">
+				Updated on {{blog_post.date_updated|date:"D M Y"}} by {{ blog_post.author.username }}
+				
+			</div>
+		</div>
+		<!--end of card-->
+
+      
+		<!-- -->
+		<div class="card mb-3 mx-auto d-block bg-dark" style="width: 60rem; margin-top: 12px;">
+		<h2 style="color: white;">Comments...</h2>
+
+		{% if not blog_post.comments.all%}
+			 <div class="card"><p>You have no comments... <a href="{%url 'blog:comment' blog_post.slug%}">Add</a></p></div>
+
+		{%else%}
+		
+		
+		<div class="card-header">
+    <button class="btn btn-sm btn-primary"><a href="{%url 'blog:comment' blog_post.slug%}" class="text-white">Add</a></button>
+  </div>
+			{%for comment in blog_post.comments.all%}
+				 <ul class="list-group list-group-flush">
+    <li class="list-group-item"><strong class="card-title">{{comment.name}} - <p class="text-muted">{{comment.date_published}}</p> 
+    </strong> {{comment.body}}</li>
+    
+    
+  </ul>
+  		{%endfor%}
+		{%endif%}
+		</div>
+
+
+
+	</div>
+
+
+</div>
+
+
+{%endblock content%}

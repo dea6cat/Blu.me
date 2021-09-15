@@ -1,0 +1,72 @@
+
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+<style type="text/css">
+
+	body{
+		-ms-flex-align: center;
+  align-items: center;
+
+	}
+
+
+
+
+
+
+.card {
+        margin: 0 auto; /* Added */
+        float: none; /* Added */
+        margin-bottom: 10px; /* Added */
+}
+
+
+
+
+</style>
+<div class="container">
+  <div class="row">
+    
+
+
+  
+      <div class="card mb-3 text-center " >
+  
+    <div >
+      <h5 class="card-title text-center text-muted">𝘽𝙡𝙪𝙢𝙚 ✽</h5>
+      <div class="mx-auto d-block" >
+        <img style="width: 200px;height: 200px;" src="{{user.image.url}}" name="image" class=" rounded-circle " alt="Responsive image">
+    </div>
+    </div>
+    <!-- Image -->
+        
+    
+      <div class="card-body text-center " style="text-align: center;">
+  <form  method="post" enctype="multipart/form-data">{% csrf_token %}
+        
+                   {{form.as_p}}
+      
+      <button style="margin-top: 5px;" class="btn  btn-primary " type="submit">Save changes</button>
+  </form>
+        
+      </div>
+    
+ 
+</div>
+
+  
+
+
+
+
+</div> 
+</div>
+
+
+
+
+{% endblock content%}

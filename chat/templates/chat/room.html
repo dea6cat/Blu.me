@@ -1,0 +1,112 @@
+<!-- chat/templates/chat/room.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<head>
+ <style type="text/css">
+     
+    
+     .unselectable {
+     
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.something {
+        width: 90%;
+        max-width: 90%;
+        margin: auto;
+        height: 50%;
+    }
+.btn{
+
+    margin-bottom: 5%;
+}
+.unselectable{
+    background-color: black;
+    border:none;
+
+}
+
+
+
+ </style>
+
+</head>
+{%if request.user.is_authenticated%}
+    
+<div class="container">
+<div class="card bg-dark">
+    <i class="fas fa-user-secret fa-2x text-white" style="padding-left: 3%;"></i>  
+    <textarea class="unselectable text-white" id="chat-log" style="resize:none" cols="100" rows="20" high="90" width="90" wrap="soft" readonly>!This chat-room is not monitored, and the conversations are not stored on our servers, please beware of danger, and shady individuals. we are not responsible for what you share.</textarea><br>
+    <div class="card-body">
+
+            <textarea class="something" id="chat-message-input"  value="hello" type="text" style="resize:none;">  </textarea>
+            <button id="chat-message-submit" type="button" class="btn btn-lg btn-outline-primary"><i class="fas fa-paper-plane"></i></button><br>
+  
+
+            <!--<input id="chat-message-submit" type="button" value="Send">-->
+            
+            {{ room_name|json_script:"room-name" }}
+
+
+            <script>
+                var user = '{{user.username}}';
+                //function myFunction() {document.getElementById("chat-message-input").defaultValue = user;}
+              //function myFunction() {document.getElementById("chat-message-input").value = "Johnny Bravo";}
+                
+                const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+                const chatSocket = new WebSocket(
+                    'ws://'
+                    + window.location.host
+                    + '/ws/chat/'
+                    + roomName
+                    + '/'
+                );
+                console.log(user)
+                chatSocket.onmessage = function(e) {
+                    const data = JSON.parse(e.data);
+                    document.querySelector('#chat-log').value += ('@'+data.message + '\n');
+                };
+
+                chatSocket.onclose = function(e) {
+                    console.error('Chat socket closed unexpectedly');
+                };
+
+                document.querySelector('#chat-message-input').focus();
+                document.querySelector('#chat-message-input').onkeyup = function(e) {
+                    if (e.keyCode === 13) {  // enter, return
+                        document.querySelector('#chat-message-submit').click();
+                    }
+                };
+
+                document.querySelector('#chat-message-submit').onclick = function(e) {
+                    const messageInputDom = document.querySelector('#chat-message-input');
+                    const message = messageInputDom.value;
+                    chatSocket.send(JSON.stringify({
+                        'message': message,
+                        'author' : user
+                    }));
+                    messageInputDom.value = user +'> ';
+                };
+            </script>
+        </div>
+    </div> 
+</div>
+
+{%else%}
+     <div class="d-flex flex-column">
+        <div class="card">
+        <p class="m-auto">You must authenticate to view this page. </p>
+        <p class="m-auto">
+            <a href="{% url 'register' %}">Create an account</a> or 
+            <a href="{% url 'login' %}">login</a>.
+        </p>
+        </div>
+    </div>
+{%endif%}
+{% endblock content %}
